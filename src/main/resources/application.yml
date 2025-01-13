@@ -2,8 +2,8 @@ spring:
   datasource:
     url: jdbc:h2:mem:taskmanagerdb
     driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    username: ${H2_DB_USERNAME}
+    password: ${H2_DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
