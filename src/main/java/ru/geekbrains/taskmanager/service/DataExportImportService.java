@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class DataExportImportService {
 
@@ -22,13 +23,6 @@ public class DataExportImportService {
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
-
-    public DataExportImportService(TaskRepository taskRepository, ProjectRepository projectRepository, UserRepository userRepository, ObjectMapper objectMapper) {
-        this.taskRepository = taskRepository;
-        this.projectRepository = projectRepository;
-        this.userRepository = userRepository;
-        this.objectMapper = objectMapper;
-    }
 
     public void exportTasks(String filePath) throws IOException {
         List<Task> tasks = taskRepository.findAll();

@@ -1,5 +1,6 @@
 package ru.geekbrains.taskmanager.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.geekbrains.taskmanager.entity.Project;
 import ru.geekbrains.taskmanager.entity.Task;
@@ -12,13 +13,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
-
-    public ProjectService(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
-    }
 
     public List<Project> getAllProjects() {
         return projectRepository.findAll();

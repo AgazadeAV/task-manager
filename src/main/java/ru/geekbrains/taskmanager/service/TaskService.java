@@ -1,5 +1,6 @@
 package ru.geekbrains.taskmanager.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.geekbrains.taskmanager.entity.Task;
 import ru.geekbrains.taskmanager.entity.TaskStatus;
@@ -10,13 +11,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TaskService {
 
     private final TaskRepository taskRepository;
-
-    public TaskService(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
 
     public List<Task> getAllTasks() {
         return taskRepository.findAll();

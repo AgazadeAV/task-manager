@@ -1,5 +1,6 @@
 package ru.geekbrains.taskmanager.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.geekbrains.taskmanager.entity.User;
 import ru.geekbrains.taskmanager.exception.UserNotFoundException;
@@ -8,13 +9,10 @@ import ru.geekbrains.taskmanager.repository.UserRepository;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();

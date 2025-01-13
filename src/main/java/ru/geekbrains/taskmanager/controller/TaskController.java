@@ -1,7 +1,16 @@
 package ru.geekbrains.taskmanager.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.geekbrains.taskmanager.dto.TaskDTO;
 import ru.geekbrains.taskmanager.entity.Task;
 import ru.geekbrains.taskmanager.entity.TaskStatus;
@@ -15,6 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(TaskController.API_TASK)
+@RequiredArgsConstructor
 public class TaskController {
 
     public static final String API_TASK = "/api/tasks";
@@ -28,11 +38,6 @@ public class TaskController {
     private final TaskService taskService;
     private final DataExportImportService dataExportImportService;
 
-    public TaskController(TaskService taskService, DataExportImportService dataExportImportService) {
-        this.taskService = taskService;
-        this.dataExportImportService = dataExportImportService;
-    }
-
     @GetMapping
     public List<TaskDTO> getAllTasks() {
         return taskService.getAllTasks().stream()
@@ -41,7 +46,7 @@ public class TaskController {
     }
 
     @GetMapping(TASK_ID)
-    public ResponseEntity<TaskDTO> getTaskById(@PathVariable (name = "id") Long id) {
+    public ResponseEntity<TaskDTO> getTaskById(@PathVariable(name = "id") Long id) {
         Task task = taskService.getTaskById(id);
         return ResponseEntity.ok(TaskMapper.toDTO(task));
     }

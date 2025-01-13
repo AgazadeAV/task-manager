@@ -1,7 +1,16 @@
 package ru.geekbrains.taskmanager.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.geekbrains.taskmanager.dto.ProjectDTO;
 import ru.geekbrains.taskmanager.entity.Project;
 import ru.geekbrains.taskmanager.entity.TaskStatus;
@@ -15,6 +24,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(ProjectController.API_PROJECT)
+@RequiredArgsConstructor
 public class ProjectController {
 
     public static final String API_PROJECT = "/api/projects";
@@ -26,11 +36,6 @@ public class ProjectController {
     private final ProjectService projectService;
     private final DataExportImportService dataExportImportService;
 
-    public ProjectController(ProjectService projectService, DataExportImportService dataExportImportService) {
-        this.projectService = projectService;
-        this.dataExportImportService = dataExportImportService;
-    }
-
     @GetMapping
     public List<ProjectDTO> getAllProjects() {
         return projectService.getAllProjects().stream()
@@ -39,7 +44,7 @@ public class ProjectController {
     }
 
     @GetMapping(PROJECT_ID)
-    public ResponseEntity<ProjectDTO> getProjectById(@PathVariable (name = "id") Long id) {
+    public ResponseEntity<ProjectDTO> getProjectById(@PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(ProjectMapper.toDTO(projectService.getProjectById(id)));
     }
 
