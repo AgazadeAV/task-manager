@@ -1,29 +1,19 @@
 package ru.geekbrains.taskmanager.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import ru.geekbrains.taskmanager.dto.UserDTO;
-import ru.geekbrains.taskmanager.entity.Project;
 import ru.geekbrains.taskmanager.entity.User;
 
-import java.util.stream.Collectors;
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
-public class UserMapper {
+    @Mapping(target = "projects", ignore = true)
+    User mapToEntity(UserDTO userDTO);
 
-    public static UserDTO toDTO(User user) {
-        UserDTO dto = new UserDTO();
-        dto.setId(user.getId());
-        dto.setUsername(user.getUsername());
-        dto.setProjectIds(
-                user.getProjects().stream()
-                        .map(Project::getId)
-                        .collect(Collectors.toList())
-        );
-        return dto;
-    }
+    @Mapping(target = "projects", ignore = true)
+    UserDTO mapToDto(User user);
 
-    public static User toEntity(UserDTO dto) {
-        User user = new User();
-        user.setId(dto.getId());
-        user.setUsername(dto.getUsername());
-        return user;
-    }
+    void updateEntity(UserDTO userDTO, @MappingTarget User user);
 }

@@ -1,42 +1,18 @@
 package ru.geekbrains.taskmanager.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import ru.geekbrains.taskmanager.entity.User;
-import ru.geekbrains.taskmanager.exception.UserNotFoundException;
-import ru.geekbrains.taskmanager.repository.UserRepository;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class UserService {
+public interface UserService {
 
-    private final UserRepository userRepository;
+    List<User> getAllUsers();
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+    User getUserById(Long id);
 
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
-    }
+    User createUser(User user);
 
-    public User createUser(User user) {
-        return userRepository.save(user);
-    }
+    User updateUser(Long id, User updatedUser);
 
-    public User updateUser(Long id, User updatedUser) {
-        User existingUser = getUserById(id);
-        existingUser.setUsername(updatedUser.getUsername());
-        return userRepository.save(existingUser);
-    }
-
-    public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException("Cannot delete. User not found with id " + id);
-        }
-        userRepository.deleteById(id);
-    }
+    void deleteUser(Long id);
 }

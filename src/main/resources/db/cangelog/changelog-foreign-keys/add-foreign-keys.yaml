@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: add_foreign_keys
+      author: azer agazade
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: projects
+            baseColumnNames: user_id
+            constraintName: fk_projects_user
+            referencedTableName: users
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: tasks
+            baseColumnNames: project_id
+            constraintName: fk_tasks_project
+            referencedTableName: projects
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: tasks
+            baseColumnNames: user_id
+            constraintName: fk_tasks_user
+            referencedTableName: users
+            referencedColumnNames: id

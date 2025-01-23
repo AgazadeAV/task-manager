@@ -1,14 +1,23 @@
 package ru.geekbrains.taskmanager.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Setter
-@Getter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Schema(description = "DTO for User")
 public class UserDTO {
-    private Long id;
+
+    @NotBlank(message = "Username is required.")
     private String username;
-    private List<Long> projectIds;
+
+    private List<ProjectDTO> projects;
 }

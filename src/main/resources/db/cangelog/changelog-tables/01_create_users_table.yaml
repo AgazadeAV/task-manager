@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_users_table
+      author: azer agazade
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+                    autoIncrement: true
+              - column:
+                  name: username
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false

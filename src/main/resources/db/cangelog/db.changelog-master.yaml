@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - includeAll:
+      path: db/changelog/changelog-environment
+  - includeAll:
+      path: db/changelog/changelog-tables
+  - includeAll:
+      path: db/changelog/changelog-foreign-keys

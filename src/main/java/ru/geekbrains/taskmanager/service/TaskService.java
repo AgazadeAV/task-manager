@@ -1,59 +1,26 @@
 package ru.geekbrains.taskmanager.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import ru.geekbrains.taskmanager.entity.Task;
 import ru.geekbrains.taskmanager.entity.TaskStatus;
-import ru.geekbrains.taskmanager.exception.TaskNotFoundException;
-import ru.geekbrains.taskmanager.repository.TaskRepository;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class TaskService {
+public interface TaskService {
 
-    private final TaskRepository taskRepository;
+    List<Task> getAllTasks();
 
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
-    }
+    Task getTaskById(Long id);
 
-    public Task getTaskById(Long id) {
-        return taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException("Task not found with id " + id));
-    }
+    Task createTask(Task task);
 
-    public Task createTask(Task task) {
-        return taskRepository.save(task);
-    }
+    Task updateTask(Long id, Task updatedTask);
 
-    public Task updateTask(Long id, Task updatedTask) {
-        Task existingTask = getTaskById(id);
-        existingTask.setTitle(updatedTask.getTitle());
-        existingTask.setDescription(updatedTask.getDescription());
-        existingTask.setStatus(updatedTask.getStatus());
-        existingTask.setDueDate(updatedTask.getDueDate());
-        return taskRepository.save(existingTask);
-    }
+    void deleteTask(Long id);
 
-    public void deleteTask(Long id) {
-        if (!taskRepository.existsById(id)) {
-            throw new TaskNotFoundException("Cannot delete. Task not found with id " + id);
-        }
-        taskRepository.deleteById(id);
-    }
+    List<Task> getTasksByStatus(TaskStatus status);
 
-    public List<Task> getTasksByStatus(TaskStatus status) {
-        return taskRepository.findByStatus(status);
-    }
+    List<Task> getTasksByDueDate(LocalDate dueDate);
 
-    public List<Task> getTasksByDueDate(LocalDate dueDate) {
-        return taskRepository.findByDueDate(dueDate);
-    }
-
-    public List<Task> searchTasks(String keyword) {
-        return taskRepository.searchByKeyword(keyword);
-    }
+    List<Task> searchTasks(String keyword);
 }

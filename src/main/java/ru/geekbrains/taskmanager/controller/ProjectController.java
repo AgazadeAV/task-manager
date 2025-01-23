@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.geekbrains.taskmanager.dto.ProjectDTO;
 import ru.geekbrains.taskmanager.entity.Project;
 import ru.geekbrains.taskmanager.entity.TaskStatus;
+import ru.geekbrains.taskmanager.service.impl.DataExportImportServiceImpl;
+import ru.geekbrains.taskmanager.service.impl.ProjectServiceImpl;
 import ru.geekbrains.taskmanager.mapper.ProjectMapper;
-import ru.geekbrains.taskmanager.service.DataExportImportService;
-import ru.geekbrains.taskmanager.service.ProjectService;
+import ru.geekbrains.taskmanager.swagger.specs.ProjectApiSpec;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(ProjectController.API_PROJECT)
 @RequiredArgsConstructor
-public class ProjectController {
+public class ProjectController implements ProjectApiSpec {
 
     public static final String API_PROJECT = "/api/projects";
     public static final String PROJECT_ID = "/{id}";
@@ -33,50 +34,58 @@ public class ProjectController {
     public static final String EXPORT_PROJECT_TO_JSON = "/export";
     public static final String IMPORT_PROJECT_FROM_JSON = "/import";
 
-    private final ProjectService projectService;
-    private final DataExportImportService dataExportImportService;
+    private final ProjectServiceImpl projectServiceImpl;
+    private final DataExportImportServiceImpl dataExportImportServiceImpl;
+    private final ProjectMapper projectMapper;
 
     @GetMapping
+    @Override
     public List<ProjectDTO> getAllProjects() {
-        return projectService.getAllProjects().stream()
-                .map(ProjectMapper::toDTO)
+        return projectServiceImpl.getAllProjects().stream()
+                .map(projectMapper::mapToDto)
                 .toList();
     }
 
     @GetMapping(PROJECT_ID)
+    @Override
     public ResponseEntity<ProjectDTO> getProjectById(@PathVariable(name = "id") Long id) {
-        return ResponseEntity.ok(ProjectMapper.toDTO(projectService.getProjectById(id)));
+        return ResponseEntity.ok(projectMapper.mapToDto(projectServiceImpl.getProjectById(id)));
     }
 
     @PostMapping
+    @Override
     public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectDTO projectDTO) {
-        Project project = ProjectMapper.toEntity(projectDTO);
-        Project createdProject = projectService.createProject(project);
-        return ResponseEntity.ok(ProjectMapper.toDTO(createdProject));
+        Project project = projectMapper.mapToEntity(projectDTO);
+        Project createdProject = projectServiceImpl.createProject(project);
+        return ResponseEntity.ok(projectMapper.mapToDto(createdProject));
     }
 
     @PutMapping(PROJECT_ID)
-    public ResponseEntity<ProjectDTO> updateProject(@PathVariable (name = "id") Long id, @RequestBody ProjectDTO projectDTO) {
-        Project project = ProjectMapper.toEntity(projectDTO);
-        Project updatedProject = projectService.updateProject(id, project);
-        return ResponseEntity.ok(ProjectMapper.toDTO(updatedProject));
+    @Override
+    public ResponseEntity<ProjectDTO> updateProject(@PathVariable(name = "id") Long id, @RequestBody ProjectDTO projectDTO) {
+        Project project = projectMapper.mapToEntity(projectDTO);
+        Project updatedProject = projectServiceImpl.updateProject(id, project);
+        return ResponseEntity.ok(projectMapper.mapToDto(updatedProject));
     }
 
     @DeleteMapping(PROJECT_ID)
-    public ResponseEntity<Void> deleteProject(@PathVariable (name = "id") Long id) {
-        projectService.deleteProject(id);
+    @Override
+    public ResponseEntity<Void> deleteProject(@PathVariable(name = "id") Long id) {
+        projectServiceImpl.deleteProject(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping(PROJECT_METRICS)
-    public ResponseEntity<Map<TaskStatus, Long>> getTaskMetrics(@PathVariable (name = "id") Long id) {
-        return ResponseEntity.ok(projectService.getTaskMetrics(id));
+    @Override
+    public ResponseEntity<Map<TaskStatus, Long>> getTaskMetrics(@PathVariable(name = "id") Long id) {
+        return ResponseEntity.ok(projectServiceImpl.getTaskMetrics(id));
     }
 
     @GetMapping(EXPORT_PROJECT_TO_JSON)
+    @Override
     public ResponseEntity<String> exportProjects(@RequestParam String filePath) {
         try {
-            dataExportImportService.exportProjects(filePath);
+            dataExportImportServiceImpl.exportProjects(filePath);
             return ResponseEntity.ok("Projects exported successfully to " + filePath);
         } catch (IOException e) {
             return ResponseEntity.internalServerError().body("Failed to export projects: " + e.getMessage());
@@ -84,9 +93,10 @@ public class ProjectController {
     }
 
     @PostMapping(IMPORT_PROJECT_FROM_JSON)
+    @Override
     public ResponseEntity<String> importProjects(@RequestParam String filePath) {
         try {
-            dataExportImportService.importProjects(filePath);
+            dataExportImportServiceImpl.importProjects(filePath);
             return ResponseEntity.ok("Projects imported successfully from " + filePath);
         } catch (IOException e) {
             return ResponseEntity.internalServerError().body("Failed to import projects: " + e.getMessage());
